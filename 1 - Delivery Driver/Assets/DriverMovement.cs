@@ -6,11 +6,13 @@ public class DriverMovement : MonoBehaviour
 {
     [SerializeField] private float rotationFactor = 256f;
     [SerializeField] private float currentSpeedFactor = 16f;
-    private float timeSinceSpeedChange = 3f;
+
     private bool isSpeedAltered = false;
-    [SerializeField] private readonly float normalSpeed = 16f;
-    [SerializeField] private readonly float slowSpeed = 8f;
-    [SerializeField] private readonly float boostSpeed = 32f;
+    private float timeElapsedSinceSpeedChange = 0f;
+
+    private readonly float normalSpeed = 16f;
+    private readonly float slowSpeed = 8f;
+    private readonly float boostSpeed = 32f;
 
     // Update is called once per frame
     private void Update()
@@ -19,11 +21,14 @@ public class DriverMovement : MonoBehaviour
          * Allows inputs to be performed independent of frames per second
          */
 
-        if(isSpeedAltered && timeSinceSpeedChange < 1.6f) {
-            this.timeSinceSpeedChange += Time.deltaTime;
-        } else {
-            this.currentSpeedFactor = this.normalSpeed;
-            this.isSpeedAltered = false;
+        if(isSpeedAltered) {
+            if(timeElapsedSinceSpeedChange < 1.6f) {
+                this.timeElapsedSinceSpeedChange += Time.deltaTime;
+            } else {
+                this.timeElapsedSinceSpeedChange = 0f;
+                this.isSpeedAltered = false;
+                this.currentSpeedFactor = this.normalSpeed;
+            }
         }
 
         transform.Rotate(0, 0, -Input.GetAxis("Horizontal") * this.rotationFactor * Time.deltaTime);
@@ -33,7 +38,6 @@ public class DriverMovement : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         this.currentSpeedFactor = this.slowSpeed;
-        this.timeSinceSpeedChange = 0f;
         this.isSpeedAltered = true;
     }
 
@@ -41,7 +45,6 @@ public class DriverMovement : MonoBehaviour
         if(collider.tag == "SpeedBoost")
         {
             this.currentSpeedFactor = this.boostSpeed;
-            this.timeSinceSpeedChange = 0f;
             this.isSpeedAltered = true;
         }
     }

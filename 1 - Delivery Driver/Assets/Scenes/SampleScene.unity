@@ -355,7 +355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationFactor: 256
-  currentSpeedFactor: 32
+  currentSpeedFactor: 16
 --- !u!212 &42976957
 SpriteRenderer:
   m_ObjectHideFlags: 0
